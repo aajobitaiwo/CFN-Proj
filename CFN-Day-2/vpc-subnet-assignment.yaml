@@ -1,0 +1,63 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: "VPC and 3 Subnets (Web, App & DB) For Dev Env"
+Metadata: {}
+
+Parameters: {}
+
+Mappings: {}
+
+Conditions: {}
+
+Resources:
+  VPC4Dev:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsHostnames: true
+      EnableDnsSupport: true
+      Tags: 
+      - Key: Name
+        Value: Dev-VPC
+        Key: Env
+        Value: Dev
+
+  WebsubnetDev:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: 10.0.16.0/20
+      MapPublicIpOnLaunch: false
+      Tags: 
+        - Key: Name
+          Value: Web-Subnet
+          Key: Env
+          Value: Dev
+      VpcId:
+        !Ref: VPC4Dev
+
+  AppsubnetDev:
+      Type: AWS::EC2::Subnet
+      Properties:
+        CidrBlock: 10.0.32.0/20
+        MapPublicIpOnLaunch: false
+        Tags: 
+          - Key: Name
+            Value: App-Subnet
+            Key: Env
+            Value: Dev
+        VpcId:
+          !Ref: VPC4Dev
+
+  DBsubnetDev:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: 10.0.64.0/20
+      MapPublicIpOnLaunch: false
+      Tags: 
+        - Key: Name
+          Value: DB-subnet
+          Key: Env
+          Value: Dev
+      VpcId:
+        !Ref: VPC4Dev
+
+Outputs: {}
