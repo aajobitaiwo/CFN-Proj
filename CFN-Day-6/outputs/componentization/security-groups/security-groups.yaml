@@ -1,0 +1,88 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: "Template for Webservers and DB Security Group"
+Metadata: {}
+
+Parameters:
+  #Parameters for Dev Web Server Security Group
+  DevWebServerSGGroupName:
+    Description: Dev Web Server Security Group Name
+    Type: String
+    Default: Dev-Web-Server-SG
+
+  DevWebServerSGGroupDesc:
+    Description: Dev Web Server Security Group Description
+    Type: String
+    Default: Enables SSH and HTTP
+
+  #Parameters for Dev DB Server Security Group
+  DevDBServerSGGroupName:
+    Description: Dev DB Server Security Group Name
+    Type: String
+    Default: Dev-DB-Server-SG
+
+  DevDBServerSGGroupDesc:
+    Description: Dev DB Server Security Group Description
+    Type: String
+    Default: Enables MySQL
+
+Mappings: {}
+
+Conditions: {} 
+
+Resources: 
+  # Database Security Group
+  DevWebServerSG:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: !Ref DevWebServerSGGroupName
+      GroupDescription: !Ref DevWebServerSGGroupName
+      VpcId: !ImportValue DevVPCID
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 80
+        ToPort: 80
+        CidrIp: 0.0.0.0/0
+      - IpProtocol: tcp
+        FromPort: 22
+        ToPort: 22
+        CidrIp: 0.0.0.0/0
+      SecurityGroupEgress:
+      - IpProtocol: tcp
+        FromPort: 80
+        ToPort: 80
+        CidrIp: 0.0.0.0/0
+      - IpProtocol: tcp
+        FromPort: 22
+        ToPort: 22
+        CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: DevWebServerSG
+  
+  # Database Security Group
+  DevDBServerSG:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: !Ref DevDBServerSGGroupName
+      GroupDescription: !Ref DevDBServerSGGroupName
+      VpcId: !ImportValue DevVPCID
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 3306
+        ToPort: 3306
+        CidrIp: 0.0.0.0/0
+      SecurityGroupEgress:
+      - IpProtocol: tcp
+        FromPort: 3306
+        ToPort: 3306
+        CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: DevDBServerSG
+
+Outputs:
+  DevWebServerSGIDExportOutput:
+    Description: Exporting Dev Web Server SG ID
+    Value: !Ref DevDBServerSG
+    Export: 
+      Name: DevWebServerSGID
